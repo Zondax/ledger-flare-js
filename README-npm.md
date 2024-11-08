@@ -1,0 +1,32 @@
+# @zondax/ledger-flare-js
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![npm version](https://badge.fury.io/js/%40zondax%2Fledger-flare.svg)](https://badge.fury.io/js/%40zondax%2Fledger-flare)
+[![GithubActions](https://github.com/zondax/ledger-flare-js/actions/workflows/main.yml/badge.svg)](https://github.com/Zondax/ledger-flare-js/blob/main/.github/workflows/main.yaml)
+[![CodeFactor](https://www.codefactor.io/repository/github/zondax/ledger-flare-js/badge)](https://www.codefactor.io/repository/github/zondax/ledger-flare-js)
+
+![zondax_light](docs/zondax_light.png#gh-light-mode-only)
+
+This package provides a basic client library to communicate with a Tendermint/Cosmos App running in a Ledger Nano S/S+/X/Stax/Flex devices
+
+We recommend using the npmjs package in order to receive updates/fixes.
+
+Use `yarn install` to avoid issues.
+
+# Available commands
+
+| Operation        | Response                    | Command                     |
+| ---------------- | --------------------------- | --------------------------- |
+| getVersion       | app version                 | ---------------             |
+| appInfo          | name, version, flags, etc   | ---------------             |
+| deviceInfo       | fw and mcu version, id, etc | Only available in dashboard |
+| getAddressAndPubkey          | pubkey + address            | path                        |
+| showAddressAndPubkey         | pubkey + address            | path                        |
+| sign             | signed message              | path + message              |
+| signHash         | signed hash                 | path + hash                 |
+| signEVMTransaction          | signed message              | path + message              |
+| getEVMAddress    | pubkey + address            | path                        |
+
+# Who we are?
+
+We are Zondax, a company pioneering blockchain services. If you want to know more about us, please visit us at [zondax.ch](https://zondax.ch)
