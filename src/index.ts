@@ -146,4 +146,8 @@ export class FlareApp extends BaseApp {
   async getEVMAddress(path: any, boolDisplay: any, boolChaincode?: boolean) {
     return this.eth.getAddress(path, boolDisplay, boolChaincode);
   }
+
+  async signPersonalMessage(path: string, messageHex: string): Promise<{ v: number; s: string; r: string }> {
+    return this.eth.signPersonalMessage(path, messageHex);
+  }
 }
