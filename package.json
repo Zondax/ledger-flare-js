@@ -61,5 +61,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "resolutions": {
+    "axios": "^1.12.2"
   }
 }
