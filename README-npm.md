@@ -15,17 +15,17 @@ Use `yarn install` to avoid issues.
 
 # Available commands
 
-| Operation        | Response                    | Command                     |
-| ---------------- | --------------------------- | --------------------------- |
-| getVersion       | app version                 | ---------------             |
-| appInfo          | name, version, flags, etc   | ---------------             |
-| deviceInfo       | fw and mcu version, id, etc | Only available in dashboard |
-| getAddressAndPubkey          | pubkey + address            | path                        |
-| showAddressAndPubkey         | pubkey + address            | path                        |
-| sign             | signed message              | path + message              |
-| signHash         | signed hash                 | path + hash                 |
-| signEVMTransaction          | signed message              | path + message              |
-| getEVMAddress    | pubkey + address            | path                        |
+| Operation            | Response                    | Command                     |
+| -------------------- | --------------------------- | --------------------------- |
+| getVersion           | app version                 | ---------------             |
+| appInfo              | name, version, flags, etc   | ---------------             |
+| deviceInfo           | fw and mcu version, id, etc | Only available in dashboard |
+| getAddressAndPubkey  | pubkey + address            | path                        |
+| showAddressAndPubkey | pubkey + address            | path                        |
+| sign                 | signed message              | path + message              |
+| signHash             | signed hash                 | path + hash                 |
+| signEVMTransaction   | signed message              | path + message              |
+| getEVMAddress        | pubkey + address            | path                        |
 
 # Who we are?
 

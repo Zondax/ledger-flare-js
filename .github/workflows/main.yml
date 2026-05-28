@@ -24,6 +24,6 @@ jobs:
       enable_tests: true
       enable_typecheck: false
       enable_coverage: false
-      test_command: 'test'
-      lint_command: 'lint'
-      format_command: 'format:check'
+      test_command: "test"
+      lint_command: "lint"
+      format_command: "format:check"
