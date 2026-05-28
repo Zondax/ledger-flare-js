@@ -6,7 +6,7 @@
   "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zondax/ledger-flare-js.git"
+    "url": "git+https://github.com/Zondax/ledger-flare-js.git"
   },
   "keywords": [
     "Ledger",
@@ -16,9 +16,9 @@
   "author": "Zondax GmbH",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/zondax/ledger-flare-js/issues"
+    "url": "https://github.com/Zondax/ledger-flare-js/issues"
   },
-  "homepage": "https://github.com/zondax/ledger-flare-js",
+  "homepage": "https://github.com/Zondax/ledger-flare-js",
   "dependencies": {
     "@ledgerhq/hw-app-eth": "^6.45.9",
     "@ledgerhq/hw-transport": "^6.31.7",
