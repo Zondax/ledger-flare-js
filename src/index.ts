@@ -45,12 +45,7 @@ export class FlareApp extends BaseApp {
     chunkSize: 250,
   };
 
-  constructor(
-    transport: any,
-    scrambleKey = APP_KEY,
-    ethScrambleKey = "w0w",
-    ethLoadConfig: LoadConfig = {},
-  ) {
+  constructor(transport: any, scrambleKey = APP_KEY, ethScrambleKey = "w0w", ethLoadConfig: LoadConfig = {}) {
     super(transport, FlareApp._params);
     if (transport == null) throw new Error("Transport has not been defined");
 

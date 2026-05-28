@@ -57,7 +57,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --write .",
-    "test": "yarn build && jest"
+    "format:check": "prettier --check .",
+    "test": "pnpm build && jest"
   },
   "publishConfig": {
     "access": "public"
