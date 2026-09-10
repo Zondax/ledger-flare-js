@@ -11,19 +11,16 @@ importers:
       '@ledgerhq/hw-app-eth':
         specifier: ^6.45.9
         version: 6.47.1(react@19.0.0)
-      '@ledgerhq/hw-transport':
-        specifier: ^6.31.7
-        version: 6.35.2
-      '@ledgerhq/hw-transport-mocker':
-        specifier: ^6.29.7
-        version: 6.34.2
       '@zondax/ledger-js':
         specifier: ^1.2.0
-        version: 1.3.1
+        version: 1.3.4
       varint:
         specifier: ^6.0.0
         version: 6.0.0
     devDependencies:
+      '@ledgerhq/hw-transport-mocker':
+        specifier: ^6.29.7
+        version: 6.34.2
       '@ledgerhq/logs':
         specifier: ^6.13.0
         version: 6.17.0
@@ -72,9 +69,6 @@ importers:
       eslint-plugin-unused-imports:
         specifier: ^4.1.4
         version: 4.4.1(@typescript-eslint/eslint-plugin@8.59.3(@typescript-eslint/parser@6.21.0(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)
-      index.js:
-        specifier: ^0.0.3
-        version: 0.0.3
       jest:
         specifier: ^30.0.4
         version: 30.4.2(@types/node@24.12.4)(ts-node@10.9.2(@types/node@24.12.4)(typescript@5.9.3))
@@ -511,8 +505,8 @@ packages:
   '@ledgerhq/devices@8.14.2':
     resolution: {integrity: sha512-T3pnfrsQEC/eJU0XHIqWI6qww+CL1k3NumR2XGWlMz8lVpoZ9HhcuGoCkMevp+8SWmymgyNIIFue3jlNA5KiMw==}
 
-  '@ledgerhq/devices@8.5.0':
-    resolution: {integrity: sha512-zDB6Pdk6NYYbYis8cWoLLkL9k/IvjhC3hkuuz2lhpJ2AxIs3/PDMUKoyK4DpjPtRyKk1W1lwsnpc6J1i87r4/Q==}
+  '@ledgerhq/devices@8.15.1':
+    resolution: {integrity: sha512-o4XEHiwPytnZxYUnOC5JoHX5TPDJpeMXPfXjwhsXVJ9LAbahxQWzC37Iuzk8ZY/oC2yDptzqjs/qNP2y9D9vCA==}
 
   '@ledgerhq/devices@8.7.0':
     resolution: {integrity: sha512-3pSOULPUhClk2oOxa6UnoyXW8+05FK7r6cpq2WiTey4kyIUjmIraO7AX9lhz9IU73dGVtBMdU+NCPPO2RYJaTQ==}
@@ -522,6 +516,9 @@ packages:
 
   '@ledgerhq/errors@6.35.0':
     resolution: {integrity: sha512-qk9PbqIvze7NXGogVxNCsz60rNo5FrGj8gKqs7pcyDk+em5L6s70G7cRxR+1HTXdam4WoPfntUq+WX9zQUynkg==}
+
+  '@ledgerhq/errors@6.37.0':
+    resolution: {integrity: sha512-T5yiKI5UX7ugeocdTF3TUsCIN2BH41Bio4ZeN410YFjFOf3es08n/5JyMzzKwzRgP0blG3HfBf7s7vJKqCSAeg==}
 
   '@ledgerhq/evm-tools@1.12.5':
     resolution: {integrity: sha512-U0fCYOSFQJcMoKJyAQsmxnP7epfvLLRhgqWnLFZXoTwhGJj60tG1W3eClWmhvplkMIiqtxlo+gv6GcUiwtSTbQ==}
@@ -535,11 +532,11 @@ packages:
   '@ledgerhq/hw-transport@6.31.13':
     resolution: {integrity: sha512-MrJRDk74wY980ofiFPRpTHQBbRw1wDuKbdag1zqlO1xtJglymwwY03K2kvBNvkm1RTSCPUp/nAoNG+WThZuuew==}
 
-  '@ledgerhq/hw-transport@6.31.9':
-    resolution: {integrity: sha512-HqB2Whl2qbrzyvs9gC/GmLhIy8RO4CWzjqHS4k0bPWDZRqKa8m6H32vjrbXGO//pUL1Mlu87UwvxvLyuICdjwg==}
-
   '@ledgerhq/hw-transport@6.35.2':
     resolution: {integrity: sha512-eSXFFqMDAB2Ra/5uqmlru0cUyc2XDQPEKf4ITWHeMms2fHhETw9lcgAEl61vszkiz0RLUVB4VQsLJjj7O8kCvg==}
+
+  '@ledgerhq/hw-transport@6.35.4':
+    resolution: {integrity: sha512-FMVxiniQp0pgSIEBX9CjXYBuIAH9BTm3OcrN+/2LqkB8QBeFZdiwmO4BeN9nc2aWspe9z6kxN3SuUyouedNokA==}
 
   '@ledgerhq/live-env@2.34.0':
     resolution: {integrity: sha512-g6tVBiLHzoVFzWUBLvCToYaBHyjKuK92bS+b6aGqyjUx51Ik9BznU1mMtCB5KcO6FtZLy71+uicTTqIjVY61TQ==}
@@ -860,8 +857,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@zondax/ledger-js@1.3.1':
-    resolution: {integrity: sha512-sDBwsunK2nSzkqJ5xi6QTiVVpAxSy+X1BVcMfKioBsInjktki2SezT7K8Hw6kSlYd3yfOJlw8cs+hqVtxpAGtg==}
+  '@zondax/ledger-js@1.3.4':
+    resolution: {integrity: sha512-GrMGU22do4Wl7+UkWpXe32HsOuIXF3fVCL4cr/uiEgwwbmBXqzto7yBII7YepnfdMzuNAcXbQ6gO0wh0HZGSBg==}
+    engines: {node: '>=20'}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -1710,9 +1708,6 @@ packages:
   imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
-
-  index.js@0.0.3:
-    resolution: {integrity: sha512-62dN71h/y6X96muC2hxI95oPRpOwf+0mwS7S0TsMuEy857w41qjz8XJjob7eyuesQ71nbylasZx8sIkPAc5pXA==}
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
@@ -3467,12 +3462,12 @@ snapshots:
       rxjs: 7.8.2
       semver: 7.7.3
 
-  '@ledgerhq/devices@8.5.0':
+  '@ledgerhq/devices@8.15.1':
     dependencies:
-      '@ledgerhq/errors': 6.35.0
+      '@ledgerhq/errors': 6.37.0
       '@ledgerhq/logs': 6.17.0
       rxjs: 7.8.2
-      semver: 7.8.0
+      semver: 7.7.3
 
   '@ledgerhq/devices@8.7.0':
     dependencies:
@@ -3495,6 +3490,8 @@ snapshots:
       - react-redux
 
   '@ledgerhq/errors@6.35.0': {}
+
+  '@ledgerhq/errors@6.37.0': {}
 
   '@ledgerhq/evm-tools@1.12.5':
     dependencies:
@@ -3540,17 +3537,17 @@ snapshots:
       '@ledgerhq/logs': 6.17.0
       events: 3.3.0
 
-  '@ledgerhq/hw-transport@6.31.9':
-    dependencies:
-      '@ledgerhq/devices': 8.5.0
-      '@ledgerhq/errors': 6.35.0
-      '@ledgerhq/logs': 6.17.0
-      events: 3.3.0
-
   '@ledgerhq/hw-transport@6.35.2':
     dependencies:
       '@ledgerhq/devices': 8.14.2
       '@ledgerhq/errors': 6.35.0
+      '@ledgerhq/logs': 6.17.0
+      events: 3.3.0
+
+  '@ledgerhq/hw-transport@6.35.4':
+    dependencies:
+      '@ledgerhq/devices': 8.15.1
+      '@ledgerhq/errors': 6.37.0
       '@ledgerhq/logs': 6.17.0
       events: 3.3.0
 
@@ -3881,9 +3878,9 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
-  '@zondax/ledger-js@1.3.1':
+  '@zondax/ledger-js@1.3.4':
     dependencies:
-      '@ledgerhq/hw-transport': 6.31.9
+      '@ledgerhq/hw-transport': 6.35.4
 
   acorn-jsx@5.3.2(acorn@8.16.0):
     dependencies:
@@ -4851,8 +4848,6 @@ snapshots:
       resolve-cwd: 3.0.0
 
   imurmurhash@0.1.4: {}
-
-  index.js@0.0.3: {}
 
   inflight@1.0.6:
     dependencies:

@@ -21,7 +21,6 @@ import { LedgerEthTransactionResolution, LoadConfig } from "@ledgerhq/hw-app-eth
 
 import BaseApp, { INSGeneric, processErrorResponse, processResponse } from "@zondax/ledger-js";
 import { serializeHrp } from "./helper";
-import type Transport from "@ledgerhq/hw-transport";
 export * from "./types";
 
 export class FlareApp extends BaseApp {
