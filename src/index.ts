@@ -14,17 +14,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************* */
-import Eth from "@ledgerhq/hw-app-eth";
-import { APP_KEY, HASH_LEN, INS, P2_VALUES, PKLEN } from "./consts";
-import { ResponseAddress, ResponseSign } from "./types";
-import { LedgerEthTransactionResolution, LoadConfig } from "@ledgerhq/hw-app-eth/lib/services/types";
+import { SignerEthBuilder, type SignerEth } from "@ledgerhq/device-signer-kit-ethereum";
+import { HASH_LEN, INS, P2_VALUES, PKLEN } from "./consts";
+import { EvmSignerOptions, ResponseAddress, ResponseSign } from "./types";
+import {
+  evmDerivationPath,
+  hexToBytes,
+  runDeviceAction,
+  toEvmMessageSignature,
+  toEvmTransactionSignature,
+} from "./evm";
 
 import BaseApp, { INSGeneric, type LedgerTransport, processErrorResponse, processResponse } from "@zondax/ledger-js";
 import { serializeHrp } from "./helper";
 export * from "./types";
+export { DeviceActionError } from "./evm";
 
 export class FlareApp extends BaseApp {
-  private eth;
+  private readonly evm: EvmSignerOptions | undefined;
+  private signer: SignerEth | undefined;
 
   static _INS = {
     GET_VERSION: 0x00,
@@ -44,11 +52,14 @@ export class FlareApp extends BaseApp {
     chunkSize: 250,
   };
 
-  constructor(transport: LedgerTransport, scrambleKey = APP_KEY, ethScrambleKey = "w0w", ethLoadConfig: LoadConfig = {}) {
+  /**
+   * @param transport - anything that can send an APDU (`DMKTransport`, or a legacy hw-transport)
+   * @param evm - the DMK session behind that transport; needed only for the EVM methods
+   */
+  constructor(transport: LedgerTransport, evm?: EvmSignerOptions) {
     super(transport, FlareApp._params);
     if (transport == null) throw new Error("Transport has not been defined");
-
-    this.eth = new Eth(transport as any, ethScrambleKey, ethLoadConfig);
+    this.evm = evm;
   }
 
   async _pubkey(path: string, show = true, hrp?: string): Promise<ResponseAddress> {
@@ -133,15 +144,75 @@ export class FlareApp extends BaseApp {
     }
   }
 
-  async signEVMTransaction(path: any, rawTxHex: any, resolution?: LedgerEthTransactionResolution | null) {
-    return this.eth.signTransaction(path, rawTxHex, resolution);
+  // ---------------------------------------------------------------------------
+  // EVM
+  //
+  // Signing goes through the Device Management Kit's Ethereum signer, which replaces
+  // `@ledgerhq/hw-app-eth` (deprecated, removed September 2026).
+  // ---------------------------------------------------------------------------
+
+  /** The Ethereum signer, built on first use so that non-EVM callers never need a DMK session. */
+  private get ethSigner(): SignerEth {
+    if (this.signer === undefined) {
+      if (this.evm === undefined) {
+        throw new Error(
+          "EVM signing needs a Device Management Kit session: construct FlareApp with { dmk, sessionId }",
+        );
+      }
+      const { dmk, sessionId, originToken, contextModule } = this.evm;
+      const builder = new SignerEthBuilder({
+        dmk,
+        sessionId,
+        ...(originToken !== undefined ? { originToken } : {}),
+      });
+      if (contextModule !== undefined) {
+        builder.withContextModule(contextModule);
+      }
+      this.signer = builder.build();
+    }
+    return this.signer;
   }
 
-  async getEVMAddress(path: any, boolDisplay: any, boolChaincode?: boolean) {
-    return this.eth.getAddress(path, boolDisplay, boolChaincode);
+  /**
+   * Signs a serialized EVM transaction. Clear-signing context is resolved by the signer's
+   * context module, so there is no `resolution` argument any more.
+   *
+   * @param path - BIP-32 path, e.g. `m/44'/60'/0'/0/0`
+   * @param rawTxHex - the RLP-encoded transaction as hex (`0x` prefix optional)
+   * @returns `r`, `s` and `v` as hex strings, as `hw-app-eth` returned them
+   */
+  async signEVMTransaction(path: string, rawTxHex: string): Promise<{ s: string; v: string; r: string }> {
+    const signature = await runDeviceAction(
+      this.ethSigner.signTransaction(evmDerivationPath(path), hexToBytes(rawTxHex), { skipOpenApp: true }),
+    );
+    return toEvmTransactionSignature(signature);
   }
 
+  async getEVMAddress(
+    path: string,
+    boolDisplay = false,
+    boolChaincode = false,
+  ): Promise<{ publicKey: string; address: string; chainCode?: string }> {
+    const { publicKey, address, chainCode } = await runDeviceAction(
+      this.ethSigner.getAddress(evmDerivationPath(path), {
+        checkOnDevice: boolDisplay,
+        returnChainCode: boolChaincode,
+        skipOpenApp: true,
+      }),
+    );
+    return chainCode === undefined ? { publicKey, address } : { publicKey, address, chainCode };
+  }
+
+  /**
+   * Signs an EIP-191 personal message.
+   *
+   * @param path - BIP-32 path
+   * @param messageHex - the message bytes as hex, as `hw-app-eth` took them
+   */
   async signPersonalMessage(path: string, messageHex: string): Promise<{ v: number; s: string; r: string }> {
-    return this.eth.signPersonalMessage(path, messageHex);
+    const signature = await runDeviceAction(
+      this.ethSigner.signMessage(evmDerivationPath(path), hexToBytes(messageHex), { skipOpenApp: true }),
+    );
+    return toEvmMessageSignature(signature);
   }
 }

@@ -27,6 +27,11 @@ Use `yarn install` to avoid issues.
 | signHash             | signed hash                 | path + hash                 |
 | signEVMTransaction   | signed message              | path + message              |
 | getEVMAddress        | pubkey + address            | path                        |
+| signPersonalMessage  | signed message              | path + message              |
+
+The EVM methods are driven by Ledger's Device Management Kit Ethereum signer: construct the app as
+`new FlareApp(transport, { dmk, sessionId })`, passing the DMK session behind the transport. The other
+methods only need the transport.
 
 # Who we are?
 
