@@ -13,9 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *****************************************************************************/
+import { DeviceActionStatus } from "@ledgerhq/device-management-kit";
+import { SignerEthBuilder } from "@ledgerhq/device-signer-kit-ethereum";
 import { MockTransport } from "@ledgerhq/hw-transport-mocker";
+import { Observable } from "rxjs";
 
 import { FlareApp } from "../src";
+import type { EvmSignerOptions } from "../src/types";
 import {
   EVM_TRANSACTION_TX,
   EXPECTED_ADDRESS,
@@ -24,6 +28,9 @@ import {
   EXPECTED_EVM_TRANSACTION_R_VALUE,
   EXPECTED_EVM_TRANSACTION_S_VALUE,
   EXPECTED_EVM_TRANSACTION_V_VALUE,
+  EXPECTED_PERSONAL_MESSAGE_R_VALUE,
+  EXPECTED_PERSONAL_MESSAGE_S_VALUE,
+  EXPECTED_PERSONAL_MESSAGE_V_VALUE,
   EXPECTED_HASH_R_VALUE,
   EXPECTED_HASH_S_VALUE,
   EXPECTED_HASH_V_VALUE,
@@ -32,8 +39,7 @@ import {
   EXPECTED_S_VALUE,
   EXPECTED_V_VALUE,
   GET_ADDRESS_RESPONSE_APDU,
-  GET_EVM_ADDRESS_RESPONSE_APDU,
-  SIGN_EVM_TRANSACTION_RESPONSE_APDU,
+  PERSONAL_MESSAGE_HEX,
   SIGN_HASH_RESPONSE_APDU,
   SIGN_TRANSACTION_RESPONSE_APDU,
   TRANSACTION_HASH,
@@ -41,6 +47,32 @@ import {
 } from "./helper";
 
 const ETH_PATH = "m/44'/60'/0'/0'/0";
+
+const mockSigner = { signTransaction: jest.fn(), getAddress: jest.fn(), signMessage: jest.fn() };
+jest.mock("@ledgerhq/device-signer-kit-ethereum", () => ({
+  SignerEthBuilder: jest
+    .fn()
+    .mockImplementation(() => ({ withContextModule: jest.fn(), build: () => mockSigner })),
+}));
+
+/** A finished DMK device action, the way the signer kit hands them out. */
+function completed<Output>(output: Output) {
+  return {
+    observable: new Observable<{ status: DeviceActionStatus.Completed; output: Output }>((subscriber) => {
+      subscriber.next({ status: DeviceActionStatus.Completed, output });
+      subscriber.complete();
+    }),
+    cancel() {},
+  };
+}
+
+const evm = { dmk: {}, sessionId: "session-1" } as unknown as EvmSignerOptions;
+const R = `0x${EXPECTED_EVM_TRANSACTION_R_VALUE}` as const;
+const S = `0x${EXPECTED_EVM_TRANSACTION_S_VALUE}` as const;
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 describe("FlareApp", () => {
   it("Retreive valid public key and address", async () => {
@@ -81,27 +113,90 @@ describe("FlareApp", () => {
     expect(resp.v?.toString("hex")).toEqual(EXPECTED_HASH_V_VALUE);
   });
 
-  it("Retreive valid EVM public key and address", async () => {
-    // Response Payload from signing
-    const responseBuffer = Buffer.from(GET_EVM_ADDRESS_RESPONSE_APDU, "hex");
+  it("Refuses EVM calls without a DMK session, before touching the device", async () => {
+    const app = new FlareApp(new MockTransport(Buffer.alloc(0)));
+    await expect(app.getEVMAddress("m/44'/60'/0'/0'/5")).rejects.toThrow(
+      "construct FlareApp with { dmk, sessionId }",
+    );
+    expect(SignerEthBuilder).not.toHaveBeenCalled();
+  });
 
-    const transport = new MockTransport(responseBuffer);
-    const app = new FlareApp(transport);
+  it("Retreive valid EVM public key and address", async () => {
+    mockSigner.getAddress.mockReturnValue(
+      completed({ publicKey: EXPECTED_EVM_PK, address: EXPECTED_EVM_ADDRESS }),
+    );
+
+    const app = new FlareApp(new MockTransport(Buffer.alloc(0)), evm);
     const resp = await app.getEVMAddress("m/44'/60'/0'/0'/5", false);
 
-    expect(resp.publicKey.toString()).toEqual(EXPECTED_EVM_PK);
-    expect(resp.address.toString()).toEqual(EXPECTED_EVM_ADDRESS);
+    expect(resp.publicKey).toEqual(EXPECTED_EVM_PK);
+    expect(resp.address).toEqual(EXPECTED_EVM_ADDRESS);
+    expect(SignerEthBuilder).toHaveBeenCalledWith({ dmk: evm.dmk, sessionId: evm.sessionId });
+    expect(mockSigner.getAddress).toHaveBeenCalledWith("44'/60'/0'/0'/5", {
+      checkOnDevice: false,
+      returnChainCode: false,
+      skipOpenApp: true,
+    });
   });
 
   it("Retreive valid EVM transaction signature", async () => {
-    const responseBuffer = Buffer.from(SIGN_EVM_TRANSACTION_RESPONSE_APDU, "hex");
+    mockSigner.signTransaction.mockReturnValue(
+      completed({ r: R, s: S, v: parseInt(EXPECTED_EVM_TRANSACTION_V_VALUE, 16) }),
+    );
 
-    const transport = new MockTransport(responseBuffer);
-    const app = new FlareApp(transport);
-    const resp = await app.signEVMTransaction("m/44'/60'/0'/0'/5", EVM_TRANSACTION_TX, null);
+    const app = new FlareApp(new MockTransport(Buffer.alloc(0)), evm);
+    const resp = await app.signEVMTransaction("m/44'/60'/0'/0'/5", EVM_TRANSACTION_TX);
 
     expect(resp.r).toEqual(EXPECTED_EVM_TRANSACTION_R_VALUE);
     expect(resp.s).toEqual(EXPECTED_EVM_TRANSACTION_S_VALUE);
     expect(resp.v).toEqual(EXPECTED_EVM_TRANSACTION_V_VALUE);
+    expect(mockSigner.signTransaction).toHaveBeenCalledWith(
+      "44'/60'/0'/0'/5",
+      new Uint8Array(Buffer.from(EVM_TRANSACTION_TX, "hex")),
+      { skipOpenApp: true },
+    );
+  });
+
+  it("Retreive valid personal message signature", async () => {
+    mockSigner.signMessage.mockReturnValue(
+      completed({
+        r: `0x${EXPECTED_PERSONAL_MESSAGE_R_VALUE}`,
+        s: `0x${EXPECTED_PERSONAL_MESSAGE_S_VALUE}`,
+        v: EXPECTED_PERSONAL_MESSAGE_V_VALUE,
+      }),
+    );
+
+    const app = new FlareApp(new MockTransport(Buffer.alloc(0)), evm);
+    const resp = await app.signPersonalMessage("m/44'/60'/0'/0'/5", PERSONAL_MESSAGE_HEX);
+
+    expect(resp).toEqual({
+      r: EXPECTED_PERSONAL_MESSAGE_R_VALUE,
+      s: EXPECTED_PERSONAL_MESSAGE_S_VALUE,
+      v: EXPECTED_PERSONAL_MESSAGE_V_VALUE,
+    });
+    // the message goes to the device as bytes, never re-encoded as text
+    expect(mockSigner.signMessage).toHaveBeenCalledWith(
+      "44'/60'/0'/0'/5",
+      new Uint8Array(Buffer.from(PERSONAL_MESSAGE_HEX, "hex")),
+      { skipOpenApp: true },
+    );
+  });
+
+  it("Surfaces a device rejection as a DeviceActionError with statusCode 0x6985", async () => {
+    mockSigner.signTransaction.mockReturnValue({
+      observable: new Observable((subscriber) => {
+        subscriber.next({
+          status: DeviceActionStatus.Error,
+          error: { _tag: "EthAppCommandError", errorCode: "6985" },
+        });
+      }),
+      cancel() {},
+    });
+
+    const app = new FlareApp(new MockTransport(Buffer.alloc(0)), evm);
+    await expect(app.signEVMTransaction("m/44'/60'/0'/0'/5", EVM_TRANSACTION_TX)).rejects.toMatchObject({
+      name: "DeviceActionError",
+      statusCode: 0x6985,
+    });
   });
 });
