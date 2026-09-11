@@ -19,7 +19,7 @@ import { APP_KEY, HASH_LEN, INS, P2_VALUES, PKLEN } from "./consts";
 import { ResponseAddress, ResponseSign } from "./types";
 import { LedgerEthTransactionResolution, LoadConfig } from "@ledgerhq/hw-app-eth/lib/services/types";
 
-import BaseApp, { INSGeneric, processErrorResponse, processResponse } from "@zondax/ledger-js";
+import BaseApp, { INSGeneric, type LedgerTransport, processErrorResponse, processResponse } from "@zondax/ledger-js";
 import { serializeHrp } from "./helper";
 export * from "./types";
 
@@ -44,7 +44,7 @@ export class FlareApp extends BaseApp {
     chunkSize: 250,
   };
 
-  constructor(transport: any, scrambleKey = APP_KEY, ethScrambleKey = "w0w", ethLoadConfig: LoadConfig = {}) {
+  constructor(transport: LedgerTransport, scrambleKey = APP_KEY, ethScrambleKey = "w0w", ethLoadConfig: LoadConfig = {}) {
     super(transport, FlareApp._params);
     if (transport == null) throw new Error("Transport has not been defined");
 

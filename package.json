@@ -21,7 +21,7 @@
   "homepage": "https://github.com/Zondax/ledger-flare-js",
   "dependencies": {
     "@ledgerhq/hw-app-eth": "^6.45.9",
-    "@zondax/ledger-js": "^1.2.0",
+    "@zondax/ledger-js": "^2.0.0",
     "varint": "^6.0.0"
   },
   "devDependencies": {
