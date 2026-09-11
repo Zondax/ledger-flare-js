@@ -20,13 +20,14 @@
   },
   "homepage": "https://github.com/Zondax/ledger-flare-js",
   "dependencies": {
-    "@ledgerhq/hw-app-eth": "^6.45.9",
-    "@ledgerhq/hw-transport": "^6.31.7",
-    "@zondax/ledger-js": "^1.2.0",
-    "varint": "^6.0.0",
-    "@ledgerhq/hw-transport-mocker": "^6.29.7"
+    "@ledgerhq/context-module": "2.5.0",
+    "@ledgerhq/device-signer-kit-ethereum": "1.18.0",
+    "@zondax/ledger-js": "^2.0.0",
+    "varint": "^6.0.0"
   },
   "devDependencies": {
+    "@ledgerhq/device-management-kit": "1.9.0",
+    "@ledgerhq/hw-transport-mocker": "^6.29.7",
     "@ledgerhq/logs": "^6.13.0",
     "@types/jest": "30.0.0",
     "@types/node": "^24.0.10",
@@ -43,10 +44,10 @@
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-tsdoc": "^0.4.0",
     "eslint-plugin-unused-imports": "^4.1.4",
-    "index.js": "^0.0.3",
     "jest": "^30.0.4",
     "jest-serial-runner": "^1.2.2",
     "prettier": "^3.6.2",
+    "rxjs": "7.8.2",
     "secp256k1": "^5.0.1",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
@@ -65,5 +66,9 @@
   },
   "resolutions": {
     "axios": "^1.12.2"
+  },
+  "peerDependencies": {
+    "@ledgerhq/device-management-kit": "^1.9.0",
+    "rxjs": "7.8.2"
   }
 }
