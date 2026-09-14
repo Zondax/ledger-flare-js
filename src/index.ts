@@ -25,7 +25,12 @@ import {
   toEvmTransactionSignature,
 } from "./evm";
 
-import BaseApp, { INSGeneric, type LedgerTransport, processErrorResponse, processResponse } from "@zondax/ledger-js";
+import BaseApp, {
+  INSGeneric,
+  type LedgerTransport,
+  processErrorResponse,
+  processResponse,
+} from "@zondax/ledger-js";
 import { serializeHrp } from "./helper";
 export * from "./types";
 export { DeviceActionError } from "./evm";
