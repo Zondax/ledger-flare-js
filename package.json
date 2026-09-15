@@ -22,7 +22,7 @@
   "dependencies": {
     "@ledgerhq/context-module": "2.5.0",
     "@ledgerhq/device-signer-kit-ethereum": "1.18.0",
-    "@zondax/ledger-js": "^2.0.0",
+    "@zondax/ledger-js": "^2.1.0",
     "varint": "^6.0.0"
   },
   "devDependencies": {

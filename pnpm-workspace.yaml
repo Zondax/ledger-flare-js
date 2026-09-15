@@ -2,3 +2,7 @@ allowBuilds:
   keccak: true
   secp256k1: true
   unrs-resolver: false
+
+# First-party: pnpm 11+'s default 24h gate would fail CI until the tarball ages.
+minimumReleaseAgeExclude:
+  - "@zondax/ledger-js"
